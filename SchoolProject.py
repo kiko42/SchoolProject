@@ -195,8 +195,6 @@ if __name__ == "__main__":
                                (StudentName, StudentNickname, StudentClass, StudentAge, StudentID))
                 connection.commit()
                 print('Done')
-                # ==========================================================
-                # Add or remove lessons to the student, the student should at least have one lesson allways, you can't add the same lesson 2 times.
                 print("_" * 5, "Update the student lessons", "_" * 50)
                 print("-" * 5, "Those are the current student lessons:", "-" * 30)
                 LessonsIDs = cursor.execute("SELECT LessonID FROM StudentLessons WHERE StudentID = ?",
@@ -207,7 +205,6 @@ if __name__ == "__main__":
                 for LID in LessonsIDs:
                     lessonteacher = []
                     Lesson = cursor.execute("SELECT Lesson FROM Lessons WHERE LessonID = ?", (LID,)).fetchall()[0]
-                    print("ah")
                     Teacher = cursor.execute("SELECT Teacher FROM Lessons WHERE LessonID = ?", (LID,)).fetchall()[0]
                     lessonteacher.append(Lesson)
                     lessonteacher.append(Teacher)
@@ -230,7 +227,7 @@ if __name__ == "__main__":
                     print('=' * 65)
                 print("-" * 100)
                 print(
-                    "If you don't want to add or delete a lesson for the student or you done doing that hit enter directly .")
+                    "If you don't want to add or delete a lesson for the student or you done doing that hit enter directly.")
                 print("Enter one of the student lessons ID to delete it from his lessons list.")
                 print("Enter a lesson ID that is not in the student lessons list if you want to add it to his list.")
                 print("-" * 100)
@@ -241,7 +238,7 @@ if __name__ == "__main__":
                     elif studentlesson.isdigit():
                         IsItNone = bool(cursor.execute("SELECT EXISTS (SELECT 1 FROM Lessons WHERE LessonID = ?)",
                                                        (studentlesson,)).fetchone()[0])
-                        if IsItNone is None:
+                        if IsItNone is False:
                             print("Enter a correct lesson ID or hit enter directly.")
                         elif bool(cursor.execute("SELECT EXISTS (SELECT 1 FROM StudentLessons WHERE StudentID = ? AND LessonID = ?)", (StudentID, studentlesson)).fetchone()[0]) and len(cursor.execute("SELECT * FROM StudentLessons WHERE StudentID = ? ", (StudentID,)).fetchall()) <= 1:
                             print("This Student has this lesson only so you can't delete it.")
@@ -252,7 +249,7 @@ if __name__ == "__main__":
                         else:
                             cursor.execute("INSERT INTO StudentLessons VALUES (?, ?)", (StudentID, studentlesson))
                             connection.commit()
-                            print("The student successfully added.")
+                            print("The lesson successfully added.")
                     else:
                         print("You should hit enter directly or enter an integer number as a lesson ID.")
                 print("Done")
